@@ -16,7 +16,7 @@ func CheckModel(args Args, metrics *Metrics, dsmInfo *synology.DSMInfo) {
 	perfdata := ""
 
 	var message string
-	message = fmt.Sprintf("%s (S/N:%s)", dsmInfo.Model, dsmInfo.Serial)
+	message = fmt.Sprintf("%s (S/N:%s) - %s", dsmInfo.Model, dsmInfo.Serial, dsmInfo.VersionString)
 	Write(args, service, exitcode, message, perfdata, metrics)
 
 	return

@@ -1,0 +1,122 @@
+
+/*
+	//api":"SYNO.Core.System.Utilization","method":"get","version":1,"type":"current","resource":["cpu","memory","network","lun","disk","space"]}]
+
+	// Test
+	params2 := url.Values{}
+	params2.Add("api", "SYNO.Core.System.Status")
+	params2.Add("version", "1") // FIXME
+	params2.Add("method", "get")
+	//parameters.Add("type", "current")
+	//parameters.Add("method", "getinfo")
+	//parameters.Add("params", "query=all")
+
+	response2, err := api.Get("entry.cgi", &params2)
+
+	fmt.Printf("THE RESPONSE: %s", string(response2))
+
+	type SystemUtilization struct {
+		Data struct {
+			CPU struct {
+				FifteenMinLoad int    `json:"15min_load"`
+				OneMinLoad     int    `json:"1min_load"`
+				FiveMinLoad    int    `json:"5min_load"`
+				Device         string `json:"device"`
+				OtherLoad      int    `json:"other_load"`
+				SystemLoad     int    `json:"system_load"`
+				UserLoad       int    `json:"user_load"`
+			} `json:"cpu"`
+			Disk struct {
+				Disk []struct {
+					Device      string `json:"device"`
+					DisplayName string `json:"display_name"`
+					ReadAccess  int    `json:"read_access"`
+					ReadByte    int    `json:"read_byte"`
+					Type        string `json:"type"`
+					Utilization int    `json:"utilization"`
+					WriteAccess int    `json:"write_access"`
+					WriteByte   int    `json:"write_byte"`
+				} `json:"disk"`
+				Total struct {
+					Device      string `json:"device"`
+					ReadAccess  int    `json:"read_access"`
+					ReadByte    int    `json:"read_byte"`
+					Utilization int    `json:"utilization"`
+					WriteAccess int    `json:"write_access"`
+					WriteByte   int    `json:"write_byte"`
+				} `json:"total"`
+			} `json:"disk"`
+			Lun    []interface{} `json:"lun"`
+			Memory struct {
+				AvailReal  int    `json:"avail_real"`
+				AvailSwap  int    `json:"avail_swap"`
+				Buffer     int    `json:"buffer"`
+				Cached     int    `json:"cached"`
+				Device     string `json:"device"`
+				MemorySize int    `json:"memory_size"`
+				RealUsage  int    `json:"real_usage"`
+				SiDisk     int    `json:"si_disk"`
+				SoDisk     int    `json:"so_disk"`
+				SwapUsage  int    `json:"swap_usage"`
+				TotalReal  int    `json:"total_real"`
+				TotalSwap  int    `json:"total_swap"`
+			} `json:"memory"`
+			Network []struct {
+				Device string `json:"device"`
+				Rx     int    `json:"rx"`
+				Tx     int    `json:"tx"`
+			} `json:"network"`
+			Space struct {
+				Total struct {
+					Device      string `json:"device"`
+					ReadAccess  int    `json:"read_access"`
+					ReadByte    int    `json:"read_byte"`
+					Utilization int    `json:"utilization"`
+					WriteAccess int    `json:"write_access"`
+					WriteByte   int    `json:"write_byte"`
+				} `json:"total"`
+				Volume []struct {
+					Device      string `json:"device"`
+					DisplayName string `json:"display_name"`
+					ReadAccess  int    `json:"read_access"`
+					ReadByte    int    `json:"read_byte"`
+					Utilization int    `json:"utilization"`
+					WriteAccess int    `json:"write_access"`
+					WriteByte   int    `json:"write_byte"`
+				} `json:"volume"`
+			} `json:"space"`
+			Time int `json:"time"`
+		} `json:"data"`
+		Success bool `json:"success"`
+	}
+
+	if payload.Success == false {
+		return
+	}
+
+	fmt.Printf("Model:%s\n", payload.Data.Model)
+	fmt.Printf("Version:%s\n", payload.Data.Version)
+	fmt.Printf("Serial:%s\n", payload.Data.Serial)
+	fmt.Printf("Temperature:%d\n", payload.Data.Temperature)
+*/
+// At the end of the program, logout from 3CX
+//defer api.Logout()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ */

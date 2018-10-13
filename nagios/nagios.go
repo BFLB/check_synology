@@ -13,10 +13,8 @@ import (
 type Args struct {
 	Hostname    string
 	Commandfile string
-	TempWarn    int
-	TempCrit    int
-	StorageWarn int
-	StorageCrit int
+	UptimeWarn  int
+	UptimeCrit  int
 }
 
 type Metrics struct {

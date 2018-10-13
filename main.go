@@ -28,6 +28,8 @@ var (
 	port        = flag.String("port", "5001", "Controller port")
 	commandfile = flag.String("cmd", "stdout", "Nagios command file")
 	timeout     = flag.Int("T", 10, "Timeout")
+	uptimeWarn  = flag.Int("uptimeWarn", 86400, "Uptime Warning (s)")
+	uptimeCrit  = flag.Int("uptimeCrit", 0, "Uptime Warning (s)")
 	version     = flag.Bool("v", false, "Show version")
 )
 
@@ -67,6 +69,13 @@ func main() {
 		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
 		os.Exit(exitcode)
 	}
+	var systemStatus *synology.SystemStatus
+	systemStatus, err = api.SystemStatus()
+	if err != nil {
+		exitcode = nagios.CRITICAL
+		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
+		os.Exit(exitcode)
+	}
 
 	timestampFetch := time.Now()
 
@@ -74,11 +83,18 @@ func main() {
 	var nagiArgs nagios.Args
 	nagiArgs.Hostname = *host
 	nagiArgs.Commandfile = *commandfile
+	nagiArgs.UptimeWarn = *uptimeWarn
+	nagiArgs.UptimeCrit = *uptimeCrit
 
 	var nagiMetrics nagios.Metrics
 
 	// Do the checks
 	nagios.CheckModel(nagiArgs, &nagiMetrics, dsmInfo)
+	nagios.CheckSystemStatus(nagiArgs, &nagiMetrics, systemStatus)
+	nagios.CheckTemperature(nagiArgs, &nagiMetrics, dsmInfo)
+	nagios.CheckUptime(nagiArgs, &nagiMetrics, dsmInfo)
+
+	fmt.Printf("Uptime: %d", dsmInfo.Uptime)
 
 	timestampProcess := time.Now()
 
