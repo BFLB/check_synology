@@ -76,6 +76,39 @@ func main() {
 		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
 		os.Exit(exitcode)
 	}
+/*	
+	var systemUtilization *synology.SystemUtilization
+	systemUtilization, err = api.SystemUtilization()
+	if err != nil {
+		exitcode = nagios.CRITICAL
+		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
+		os.Exit(exitcode)
+	}
+*/
+
+	var storage *synology.Storage
+	storage, err = api.Storage()
+	if err != nil {
+		exitcode = nagios.CRITICAL
+		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
+		os.Exit(exitcode)
+	}
+	fmt.Printf("Storage:\n\n\n%v\n\n\n", storage) // FIXME Remove
+
+/*
+	var apiInfo []synology.APIInfoElement
+	apiInfo, err = api.APIInfo()
+	if err != nil {
+		exitcode = nagios.CRITICAL
+		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
+		os.Exit(exitcode)
+	}
+	fmt.Println("\nAPI-INFO")
+	for _, e := range apiInfo {
+		fmt.Printf("    %s\n", e.String())
+	}
+*/	
+
 
 	timestampFetch := time.Now()
 
