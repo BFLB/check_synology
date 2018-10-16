@@ -15,6 +15,9 @@ type Args struct {
 	Commandfile string
 	UptimeWarn  int
 	UptimeCrit  int
+	TempWarn    int
+	TempCrit    int
+	DiskChecks  bool
 }
 
 type Metrics struct {
@@ -74,3 +77,41 @@ func NagiState(exitcode int) (state string) {
 		return "UNKNOWN"
 	}
 }
+
+func maxExitcode (e1 int, e2 int) int{
+	switch e1{
+	case OK:
+		return e2
+	case WARNING:
+		switch e2 {
+		case OK:
+			return WARNING
+		case WARNING:
+			return WARNING
+		case CRITICAL:
+			return CRITICAL
+		case UNKNOWN:
+			return WARNING
+		default:
+			return WARNING
+		}
+	case CRITICAL:
+		return CRITICAL
+	case UNKNOWN:
+		switch e2 {
+		case OK:
+			return UNKNOWN
+		case WARNING:
+			return WARNING
+		case CRITICAL:
+			return CRITICAL
+		case UNKNOWN:
+			return UNKNOWN
+		default:
+			return UNKNOWN
+		}
+	default:
+		return UNKNOWN 
+	}
+}
+

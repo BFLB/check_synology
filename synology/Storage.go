@@ -15,14 +15,14 @@ import (
 )
 
 type storageResponse struct {
-	Data    Storage `json:"data"`
+	Data    StorageObject `json:"data"`
 	Error   struct {
 		Code int `json:"code"`
 	} `json:"error, omitempty"`
 	Success bool         `json:"success"`
 }
 
-type Storage struct {
+type StorageObject struct {
 	AHAInfo struct {
 		EncCnt     int `json:"enc_cnt"`
 		Enclosures []struct {
@@ -43,55 +43,7 @@ type Storage struct {
 		} `json:"hosts"`
 		LinkStatus int `json:"link_status"`
 	} `json:"AHAInfo"`
-	Disks []struct {
-		AdvProgress        string `json:"adv_progress"`
-		AdvStatus          string `json:"adv_status"`
-		BelowRemainLifeThr bool   `json:"below_remain_life_thr"`
-		Container          struct {
-			Order int    `json:"order"`
-			Str   string `json:"str"`
-			Type  string `json:"type"`
-		} `json:"container"`
-		Device             string `json:"device"`
-		DisableSecera      bool   `json:"disable_secera"`
-		DiskType           string `json:"diskType"`
-		DiskCode           string `json:"disk_code"`
-		EraseTime          int    `json:"erase_time"`
-		ExceedBadSectorThr bool   `json:"exceed_bad_sector_thr"`
-		Firm               string `json:"firm"`
-		HasSystem          bool   `json:"has_system"`
-		ID                 string `json:"id"`
-		IhmTesting         bool   `json:"ihm_testing"`
-		Is4Kn              bool   `json:"is4Kn"`
-		IsSsd              bool   `json:"isSsd"`
-		IsSynoPartition    bool   `json:"isSynoPartition"`
-		IsErasing          bool   `json:"is_erasing"`
-		LongName           string `json:"longName"`
-		Model              string `json:"model"`
-		Name               string `json:"name"`
-		NumID              int    `json:"num_id"`
-		Order              int    `json:"order"`
-		OverviewStatus     string `json:"overview_status"`
-		PciSlot            int    `json:"pciSlot"`
-		PerfTesting        bool   `json:"perf_testing"`
-		PortType           string `json:"portType"`
-		RemainLife         int    `json:"remain_life"`
-		Serial             string `json:"serial"`
-		SizeTotal          string `json:"size_total"`
-		SmartProgress      string `json:"smart_progress"`
-		SmartStatus        string `json:"smart_status"`
-		SmartTestLimit     int    `json:"smart_test_limit"`
-		SmartTesting       bool   `json:"smart_testing"`
-		Status             string `json:"status"`
-		Support            bool   `json:"support"`
-		Temp               int    `json:"temp"`
-		TestingProgress    string `json:"testing_progress"`
-		TestingType        string `json:"testing_type"`
-		TrayStatus         string `json:"tray_status"`
-		Unc                int    `json:"unc"`
-		UsedBy             string `json:"used_by"`
-		Vendor             string `json:"vendor"`
-	} `json:"disks"`
+	Disks []Disk `json:"disks"`
 	Enclosures []struct {
 		Disks []struct {
 			ID string `json:"id"`
@@ -393,8 +345,58 @@ type Storage struct {
 	} `json:"volumes"`
 }
 
+type Disk struct {
+		AdvProgress        string `json:"adv_progress"`
+		AdvStatus          string `json:"adv_status"`
+		BelowRemainLifeThr bool   `json:"below_remain_life_thr"`
+		Container          struct {
+			Order int    `json:"order"`
+			Str   string `json:"str"`
+			Type  string `json:"type"`
+		} `json:"container"`
+		Device             string `json:"device"`
+		DisableSecera      bool   `json:"disable_secera"`
+		DiskType           string `json:"diskType"`
+		DiskCode           string `json:"disk_code"`
+		EraseTime          int    `json:"erase_time"`
+		ExceedBadSectorThr bool   `json:"exceed_bad_sector_thr"`
+		Firm               string `json:"firm"`
+		HasSystem          bool   `json:"has_system"`
+		ID                 string `json:"id"`
+		IhmTesting         bool   `json:"ihm_testing"`
+		Is4Kn              bool   `json:"is4Kn"`
+		IsSsd              bool   `json:"isSsd"`
+		IsSynoPartition    bool   `json:"isSynoPartition"`
+		IsErasing          bool   `json:"is_erasing"`
+		LongName           string `json:"longName"`
+		Model              string `json:"model"`
+		Name               string `json:"name"`
+		NumID              int    `json:"num_id"`
+		Order              int    `json:"order"`
+		OverviewStatus     string `json:"overview_status"`
+		PciSlot            int    `json:"pciSlot"`
+		PerfTesting        bool   `json:"perf_testing"`
+		PortType           string `json:"portType"`
+		RemainLife         int    `json:"remain_life"`
+		Serial             string `json:"serial"`
+		SizeTotal          string `json:"size_total"`
+		SmartProgress      string `json:"smart_progress"`
+		SmartStatus        string `json:"smart_status"`
+		SmartTestLimit     int    `json:"smart_test_limit"`
+		SmartTesting       bool   `json:"smart_testing"`
+		Status             string `json:"status"`
+		Support            bool   `json:"support"`
+		Temp               int    `json:"temp"`
+		TestingProgress    string `json:"testing_progress"`
+		TestingType        string `json:"testing_type"`
+		TrayStatus         string `json:"tray_status"`
+		Unc                int    `json:"unc"`
+		UsedBy             string `json:"used_by"`
+		Vendor             string `json:"vendor"`
+	}
 
-func (api *Syno) Storage() (*Storage, error) {
+
+func (api *Syno) Storage() (*StorageObject, error) {
 	// Set URL parameters
 	parameters := url.Values{}
 	parameters.Add("api", "SYNO.Storage.CGI.Storage")
