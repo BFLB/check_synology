@@ -18,9 +18,11 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	//"fmt"
 	//"net/http/httputil"
 )
 
+// TODO Implement error code display
 /*
 100 Unknown error
 101 Invalid parameter
@@ -186,16 +188,28 @@ func (api *Syno) Get(path string, params *url.Values) ([]byte, error) {
 }
 
 // Terminates a session
-func (api *Syno) Logout() error {
+func (api *Syno) Logout(user string, pass string) error {
 
-	logoutUrl := "logout"
-
-	// Empty payload
-	type ps struct {
+	var Url *url.URL
+	Url, err := url.Parse(api.baseURL)
+	if err != nil {
+		return err
 	}
-	var payload ps
 
-	_, err := api.Post(logoutUrl, payload)
+	Url.Path += "webapi/auth.cgi"
+	parameters := url.Values{}
+	parameters.Add("api", "SYNO.API.Auth")
+	parameters.Add("version", "3") // FIXME
+	parameters.Add("method", "logout")
+	parameters.Add("account", user)
+	parameters.Add("passwd", pass)
+	parameters.Add("session", "FileStation")
+	parameters.Add("format", "cookie")
+	Url.RawQuery = parameters.Encode()
+
+	_, err = api.client.Get(Url.String())
+
+	//fmt.Printf("Logout:%s", resp)
 
 	return err
 

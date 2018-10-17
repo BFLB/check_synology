@@ -16,7 +16,7 @@ import (
 
 type systemUtilizationResponse struct {
 	Data    SystemUtilization `json:"data"`
-	Success bool         `json:"success"`
+	Success bool              `json:"success"`
 }
 
 type SystemUtilization struct {
@@ -35,7 +35,7 @@ type SystemUtilization struct {
 			DisplayName string `json:"display_name"`
 			ReadAccess  int    `json:"read_access"`
 			ReadByte    int    `json:"read_byte"`
-			DiskType        string `json:"type"`
+			DiskType    string `json:"type"`
 			Utilization int    `json:"utilization"`
 			WriteAccess int    `json:"write_access"`
 			WriteByte   int    `json:"write_byte"`
@@ -90,7 +90,6 @@ type SystemUtilization struct {
 	} `json:"space"`
 	Time int `json:"time"`
 }
-
 
 func (api *Syno) SystemUtilization() (*SystemUtilization, error) {
 

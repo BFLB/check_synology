@@ -11,3 +11,5 @@ Checks:
 - systemStatus
 - Temperature
 - Uptime
+- Disks
+- Storagepools (RAIDS)

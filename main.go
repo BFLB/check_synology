@@ -22,18 +22,21 @@ const _version = "0.1"
 
 // Comman-line Arguments
 var (
-	host        = flag.String("host", "", "Controller hostname")
-	user        = flag.String("user", "admin", "Controller username")
-	pass        = flag.String("pass", "admin", "Controller password")
-	port        = flag.String("port", "5001", "Controller port")
-	commandfile = flag.String("cmd", "stdout", "Nagios command file")
-	timeout     = flag.Int("T", 10, "Timeout")
-	uptimeWarn  = flag.Int("uptimeWarn", 86400, "Uptime Warning (s)")
-	uptimeCrit  = flag.Int("uptimeCrit", 0, "Uptime Warning (s)")
-	tempWarn    = flag.Int("tempWarn", 40, "Temperature Warning")
-	tempCrit    = flag.Int("tempCrit", 50, "Temperature Critical")
-	diskChecks  = flag.Bool("diskChecks", true, "Individual check for each disk")
-	version     = flag.Bool("v", false, "Show version")
+	version      = flag.Bool("v", false, "Show version")
+	host         = flag.String("host", "", "Controller hostname")
+	user         = flag.String("user", "admin", "Controller username")
+	pass         = flag.String("pass", "admin", "Controller password")
+	port         = flag.String("port", "5001", "Controller port")
+	commandfile  = flag.String("cmd", "stdout", "Nagios command file")
+	timeout      = flag.Int("T", 10, "Timeout")
+	uptimeWarn   = flag.Int("uptimeWarn", 86400, "Uptime Warning (s)")
+	uptimeCrit   = flag.Int("uptimeCrit", 0, "Uptime Warning (s)")
+	tempWarn     = flag.Int("tempWarn", 40, "Temperature Warning")
+	tempCrit     = flag.Int("tempCrit", 50, "Temperature Critical")
+	diskChecks   = flag.Bool("diskChecks", true, "Individual check for each disk")
+	poolWarn     = flag.Int("poolWarn", 100, "Used % warning")
+	poolCrit     = flag.Int("poolCrit", 100, "Used % critical")
+	poolFailCrit = flag.Int("poolFailCrit", 1, "Used % critical")
 )
 
 func main() {
@@ -60,7 +63,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Login returned error: ", err)
 	}
-	defer api.Logout()
+	defer api.Logout(*user, *pass)
 
 	timestampLogin := time.Now()
 
@@ -79,15 +82,15 @@ func main() {
 		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
 		os.Exit(exitcode)
 	}
-/*	
-	var systemUtilization *synology.SystemUtilization
-	systemUtilization, err = api.SystemUtilization()
-	if err != nil {
-		exitcode = nagios.CRITICAL
-		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
-		os.Exit(exitcode)
-	}
-*/
+	/*
+		var systemUtilization *synology.SystemUtilization
+		systemUtilization, err = api.SystemUtilization()
+		if err != nil {
+			exitcode = nagios.CRITICAL
+			fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
+			os.Exit(exitcode)
+		}
+	*/
 
 	var storage *synology.StorageObject
 	storage, err = api.Storage()
@@ -98,32 +101,34 @@ func main() {
 	}
 	//fmt.Printf("Storage:\n\n\n%v\n\n\n", storage) // FIXME Remove
 
-/*
-	var apiInfo []synology.APIInfoElement
-	apiInfo, err = api.APIInfo()
-	if err != nil {
-		exitcode = nagios.CRITICAL
-		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
-		os.Exit(exitcode)
-	}
-	fmt.Println("\nAPI-INFO")
-	for _, e := range apiInfo {
-		fmt.Printf("    %s\n", e.String())
-	}
-*/	
-
+	/*
+		var apiInfo []synology.APIInfoElement
+		apiInfo, err = api.APIInfo()
+		if err != nil {
+			exitcode = nagios.CRITICAL
+			fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
+			os.Exit(exitcode)
+		}
+		fmt.Println("\nAPI-INFO")
+		for _, e := range apiInfo {
+			fmt.Printf("    %s\n", e.String())
+		}
+	*/
 
 	timestampFetch := time.Now()
 
 	// Setup Nagios
 	var nagiArgs nagios.Args
-	nagiArgs.Hostname    = *host
+	nagiArgs.Hostname = *host
 	nagiArgs.Commandfile = *commandfile
-	nagiArgs.UptimeWarn  = *uptimeWarn
-	nagiArgs.UptimeCrit  = *uptimeCrit
-	nagiArgs.TempWarn    = *tempWarn
-	nagiArgs.TempCrit    = *tempCrit
-	nagiArgs.DiskChecks   = *diskChecks
+	nagiArgs.UptimeWarn = *uptimeWarn
+	nagiArgs.UptimeCrit = *uptimeCrit
+	nagiArgs.TempWarn = *tempWarn
+	nagiArgs.TempCrit = *tempCrit
+	nagiArgs.DiskChecks = *diskChecks
+	nagiArgs.PoolWarn = *poolWarn
+	nagiArgs.PoolCrit = *poolCrit
+	nagiArgs.PoolFailCrit = *poolFailCrit
 
 	var nagiMetrics nagios.Metrics
 
@@ -132,9 +137,8 @@ func main() {
 	nagios.CheckSystemStatus(nagiArgs, &nagiMetrics, systemStatus)
 	nagios.CheckTemperature(nagiArgs, &nagiMetrics, dsmInfo)
 	nagios.CheckUptime(nagiArgs, &nagiMetrics, dsmInfo)
-	nagios.CheckDisks(nagiArgs, &nagiMetrics, storage)
-
-	fmt.Printf("Uptime: %d", dsmInfo.Uptime)
+	nagios.CheckDisk(nagiArgs, &nagiMetrics, storage)
+	nagios.CheckStoragePool(nagiArgs, &nagiMetrics, storage)
 
 	timestampProcess := time.Now()
 

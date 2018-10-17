@@ -11,13 +11,16 @@ import (
 )
 
 type Args struct {
-	Hostname    string
-	Commandfile string
-	UptimeWarn  int
-	UptimeCrit  int
-	TempWarn    int
-	TempCrit    int
-	DiskChecks  bool
+	Hostname     string
+	Commandfile  string
+	UptimeWarn   int
+	UptimeCrit   int
+	TempWarn     int
+	TempCrit     int
+	DiskChecks   bool
+	PoolWarn     int
+	PoolCrit     int
+	PoolFailCrit int
 }
 
 type Metrics struct {
@@ -78,8 +81,8 @@ func NagiState(exitcode int) (state string) {
 	}
 }
 
-func maxExitcode (e1 int, e2 int) int{
-	switch e1{
+func maxExitcode(e1 int, e2 int) int {
+	switch e1 {
 	case OK:
 		return e2
 	case WARNING:
@@ -111,7 +114,6 @@ func maxExitcode (e1 int, e2 int) int{
 			return UNKNOWN
 		}
 	default:
-		return UNKNOWN 
+		return UNKNOWN
 	}
 }
-
