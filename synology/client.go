@@ -201,10 +201,7 @@ func (api *Syno) Logout(user string, pass string) error {
 	parameters.Add("api", "SYNO.API.Auth")
 	parameters.Add("version", "3") // FIXME
 	parameters.Add("method", "logout")
-	parameters.Add("account", user)
-	parameters.Add("passwd", pass)
 	parameters.Add("session", "FileStation")
-	parameters.Add("format", "cookie")
 	Url.RawQuery = parameters.Encode()
 
 	_, err = api.client.Get(Url.String())
