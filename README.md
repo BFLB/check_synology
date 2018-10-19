@@ -13,3 +13,5 @@ Checks:
 - Uptime
 - Disks
 - Storagepools (RAIDS)
+- Hosts (Controller)
+- Enclosures (Extension Unit)
