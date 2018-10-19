@@ -21,6 +21,8 @@ type Args struct {
 	PoolWarn     int
 	PoolCrit     int
 	PoolFailCrit int
+	HostPrimary  string
+	HostSecondary string
 }
 
 type Metrics struct {

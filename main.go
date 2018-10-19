@@ -18,25 +18,27 @@ import (
 )
 
 // Version
-const _version = "0.1"
+const _version = "0.2"
 
 // Comman-line Arguments
 var (
-	version      = flag.Bool("v", false, "Show version")
-	host         = flag.String("host", "", "Controller hostname")
-	user         = flag.String("user", "admin", "Controller username")
-	pass         = flag.String("pass", "admin", "Controller password")
-	port         = flag.String("port", "5001", "Controller port")
-	commandfile  = flag.String("cmd", "stdout", "Nagios command file")
-	timeout      = flag.Int("T", 10, "Timeout")
-	uptimeWarn   = flag.Int("uptimeWarn", 86400, "Uptime Warning (s)")
-	uptimeCrit   = flag.Int("uptimeCrit", 0, "Uptime Warning (s)")
-	tempWarn     = flag.Int("tempWarn", 40, "Temperature Warning")
-	tempCrit     = flag.Int("tempCrit", 50, "Temperature Critical")
-	diskChecks   = flag.Bool("diskChecks", true, "Individual check for each disk")
-	poolWarn     = flag.Int("poolWarn", 100, "Used % warning")
-	poolCrit     = flag.Int("poolCrit", 100, "Used % critical")
-	poolFailCrit = flag.Int("poolFailCrit", 1, "Used % critical")
+	version       = flag.Bool("V", false, "Show version")
+	host          = flag.String("H", "", "Synology Address")
+	user          = flag.String("u", "admin", "Username")
+	pass          = flag.String("a", "admin", "Password")
+	port          = flag.String("p", "5001", "Port")
+	timeout       = flag.Int("t", 10, "Timeout")
+	commandfile   = flag.String("cmd", "stdout", "Nagios command file")
+	diskChecks    = flag.Bool("d", true, "Individual check for each disk")
+	hostPrimary   = flag.String("prim", "", "SN of primary host")
+	hostSecondary = flag.String("sec", "", "SN of secondary host")
+	uptimeWarn    = flag.Int("wUp", 86400, "Uptime Warning (s)")
+	uptimeCrit    = flag.Int("cUp", 0, "Uptime Warning (s)")
+	tempWarn      = flag.Int("wTemp", 40, "Temperature Warning")
+	tempCrit      = flag.Int("cTemp", 50, "Temperature Critical")
+	poolWarn      = flag.Int("wPool", 80, "Used % warning")
+	poolCrit      = flag.Int("cPool", 90, "Used % critical")
+	poolFailCrit  = flag.Int("cPoolFail", 1, "Number of failed disks per RAID for state critical")
 )
 
 func main() {
@@ -101,7 +103,7 @@ func main() {
 	}
 	//fmt.Printf("Storage:\n\n\n%v\n\n\n", storage) // FIXME Remove
 
-	/*
+/*
 		var apiInfo []synology.APIInfoElement
 		apiInfo, err = api.APIInfo()
 		if err != nil {
@@ -113,7 +115,14 @@ func main() {
 		for _, e := range apiInfo {
 			fmt.Printf("    %s\n", e.String())
 		}
-	*/
+*/	
+	var dualEnclosure *synology.DualEnclosure
+	dualEnclosure, err = api.DualEnclosure()
+	if err != nil {
+		exitcode = nagios.CRITICAL
+		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
+		os.Exit(exitcode)
+	}
 
 	timestampFetch := time.Now()
 
@@ -129,6 +138,8 @@ func main() {
 	nagiArgs.PoolWarn = *poolWarn
 	nagiArgs.PoolCrit = *poolCrit
 	nagiArgs.PoolFailCrit = *poolFailCrit
+	nagiArgs.HostPrimary = *hostPrimary
+	nagiArgs.HostSecondary = *hostSecondary
 
 	var nagiMetrics nagios.Metrics
 
@@ -139,6 +150,7 @@ func main() {
 	nagios.CheckUptime(nagiArgs, &nagiMetrics, dsmInfo)
 	nagios.CheckDisk(nagiArgs, &nagiMetrics, storage)
 	nagios.CheckStoragePool(nagiArgs, &nagiMetrics, storage)
+	nagios.CheckEnclosure(nagiArgs, &nagiMetrics, dualEnclosure)
 
 	timestampProcess := time.Now()
 

@@ -29,7 +29,7 @@ func CheckStoragePool(args Args, metrics *Metrics, storageObj *synology.StorageO
 
 	//Required fields
 	service := "Storagepool"
-	exitcode := CRITICAL
+	//exitcode := OK
 	message := ""
 	perfdata := ""
 
@@ -43,6 +43,7 @@ func CheckStoragePool(args Args, metrics *Metrics, storageObj *synology.StorageO
 	for i := 0; i < len(synoPools); i++ {
 		np := new(pool)
 		np.data = &synoPools[i]
+		np.exitcode = OK
 		pools = append(pools, np)
 	}
 
@@ -59,10 +60,7 @@ func CheckStoragePool(args Args, metrics *Metrics, storageObj *synology.StorageO
 
 	// Process
 	for _, p := range pools {
-		service = p.name
-		message = fmt.Sprintf("Status:%s Type:%s Size-Used:%dGB(%d%%) Size-Free:%dGB Size-Total:%dGB Disk-failures:%d", p.status, p.data.DeviceType, p.sizeUsed, p.percentUsed, p.sizeFree, p.sizeTotal, p.data.DiskFailureNumber)
-		perfdata = fmt.Sprintf("Size_Used_Percent=%d%%;%d;%d Size_Used=%dG Size_Free=%dG Size_Total=%dG Disk_Failures=%d;;%d", p.percentUsed, args.PoolWarn, args.PoolCrit, p.sizeUsed, p.sizeFree, p.sizeTotal, p.data.DiskFailureNumber, args.PoolFailCrit)
-
+		
 		// Status
 		status := p.data.Status
 		failed := p.data.DiskFailureNumber
@@ -81,7 +79,7 @@ func CheckStoragePool(args Args, metrics *Metrics, storageObj *synology.StorageO
 		// Space
 		switch {
 		case usage >= args.PoolCrit:
-			p.status += " - Sice Critical"
+			p.status += " - Size Critical"
 			p.exitcode = CRITICAL
 		case usage >= args.PoolWarn:
 			p.status += " - Size Warning"
@@ -90,8 +88,12 @@ func CheckStoragePool(args Args, metrics *Metrics, storageObj *synology.StorageO
 			p.exitcode = maxExitcode(p.exitcode, OK)
 		}
 
+		service = p.name
+		message = fmt.Sprintf("Status:%s Type:%s Size-Used:%dGB(%d%%) Size-Free:%dGB Size-Total:%dGB Disk-failures:%d", p.status, p.data.DeviceType, p.sizeUsed, p.percentUsed, p.sizeFree, p.sizeTotal, p.data.DiskFailureNumber)
+		perfdata = fmt.Sprintf("Size_Used_Percent=%d%%;%d;%d Size_Used=%dG Size_Free=%dG Size_Total=%dG Disk_Failures=%d;;%d", p.percentUsed, args.PoolWarn, args.PoolCrit, p.sizeUsed, p.sizeFree, p.sizeTotal, p.data.DiskFailureNumber, args.PoolFailCrit)
+		
 		// Done. Write the check result
-		Write(args, service, exitcode, message, perfdata, metrics)
+		Write(args, service, p.exitcode, message, perfdata, metrics)
 	}
 
 	return

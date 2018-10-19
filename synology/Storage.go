@@ -27,12 +27,12 @@ type StorageObject struct {
 		EncCnt     int `json:"enc_cnt"`
 		Enclosures []struct {
 			Disks       []int  `json:"disks"`
-			Fans        []int  `json:"fans"`
+			Fans        []int  `json:"fans"` // Values (To be verified): 1=Normal, 2=Failed
 			Links       []int  `json:"links"`
 			MaxDisk     int    `json:"max_disk"`
 			Model       string `json:"model"`
 			ModelID     int    `json:"model_id"`
-			Powers      []int  `json:"powers"`
+			Powers      []int  `json:"powers"` // Values (To be verified): 1=Normal, 2=Poor, 3=Disconnected
 			Temperature int    `json:"temperature"`
 		} `json:"enclosures"`
 		HostCnt int `json:"host_cnt"`
@@ -253,6 +253,17 @@ type StorageObject struct {
 			} `json:"snapshot"`
 		} `json:"vspace_can_do"`
 	} `json:"volumes"`
+}
+
+type AHAEnclosure struct {
+	Disks       []int  `json:"disks"`
+	Fans        []int  `json:"fans"`
+	Links       []int  `json:"links"`
+	MaxDisk     int    `json:"max_disk"`
+	Model       string `json:"model"`
+	ModelID     int    `json:"model_id"`
+	Powers      []int  `json:"powers"`
+	Temperature int    `json:"temperature"`
 }
 
 type StoragePool struct {
