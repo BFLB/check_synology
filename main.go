@@ -30,6 +30,7 @@ var (
 	timeout       = flag.Int("t", 10, "Timeout")
 	commandfile   = flag.String("cmd", "stdout", "Nagios command file")
 	diskChecks    = flag.Bool("d", true, "Individual check for each disk")
+	extCheck      = flag.Bool("extCheck", false, "Checks for extension-units")
 	hostPrimary   = flag.String("prim", "", "SN of primary host")
 	hostSecondary = flag.String("sec", "", "SN of secondary host")
 	uptimeWarn    = flag.Int("wUp", 86400, "Uptime Warning (s)")
@@ -119,9 +120,10 @@ func main() {
 	var dualEnclosure *synology.DualEnclosure
 	dualEnclosure, err = api.DualEnclosure()
 	if err != nil {
-		exitcode = nagios.CRITICAL
-		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
-		os.Exit(exitcode)
+		//exitcode = nagios.CRITICAL
+		//fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
+		//os.Exit(exitcode)
+		dualEnclosure = new(synology.DualEnclosure) // FIXME
 	}
 
 	timestampFetch := time.Now()

@@ -175,8 +175,8 @@ func getExitcode (disks []disk) (c int){
 func (disks *disks) minTemp() (t int) {
 	t = (*disks)[0].data.Temp
 	for i := 0; i < len(*disks); i++ {
-		if (*disks)[0].data.Temp < t {
-			t = (*disks)[0].data.Temp
+		if (*disks)[i].data.Temp < t {
+			t = (*disks)[i].data.Temp
 		}
 	}
 	return t
@@ -185,8 +185,8 @@ func (disks *disks) minTemp() (t int) {
 func (disks *disks) maxTemp() (t int) {
 	t = 0
 	for i := 0; i < len(*disks); i++ {
-		if (*disks)[0].data.Temp > t {
-			t = (*disks)[0].data.Temp
+		if (*disks)[i].data.Temp > t {
+			t = (*disks)[i].data.Temp
 		}
 	}
 	return t
@@ -195,7 +195,7 @@ func (disks *disks) maxTemp() (t int) {
 func (disks *disks) avgTemp() (t int) {
 	t = 0
 	for i := 0; i < len(*disks); i++ {
-		t += (*disks)[0].data.Temp
+		t += (*disks)[i].data.Temp
 	}
 	return int(t / len(*disks))
 }
