@@ -29,7 +29,7 @@ func CheckCPU(args Args, metrics *Metrics, util *synology.SystemUtilization) {
 
 	message = fmt.Sprintf("%d%% (User:%d%% System:%d%% Other:%d%%) Load1min:%.2f Load5min:%.2f Load15min:%.2f", currentLoad, userLoad, systemLoad, otherLoad, oneMinLoad, fiveMinLoad, fifteenMinLoad  )
 
-	perfdata = fmt.Sprintf("CPU_Total=%d%%,%d,%d CPU_User=%d%% CPU_System=%d%% CPU_Other=%d%% Load_1min=%.2f Load_5min=%.2f Load_15min:%.2f", currentLoad, args.CPUwarn, args.CPUcrit, userLoad, systemLoad, otherLoad, oneMinLoad, fiveMinLoad, fifteenMinLoad  )
+	perfdata = fmt.Sprintf("CPU_Total=%d%%;%d;%d CPU_User=%d%% CPU_System=%d%% CPU_Other=%d%% Load_1min=%.2f Load_5min=%.2f Load_15min=%.2f", currentLoad, args.CPUwarn, args.CPUcrit, userLoad, systemLoad, otherLoad, oneMinLoad, fiveMinLoad, fifteenMinLoad  )
 
 	// Set exitcode
 	switch {

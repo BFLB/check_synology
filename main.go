@@ -41,7 +41,7 @@ var (
 	poolCrit      = flag.Int("cPool", 90, "Used % critical")
 	poolFailCrit  = flag.Int("cPoolFail", 1, "Number of failed disks per RAID for state critical")
 	cpuWarn       = flag.Int("wCPU", 80, "Used % CPU warning")
-	cpuCrit       = flag.Int("cCPU", 80, "Used % CPU critical")
+	cpuCrit       = flag.Int("cCPU", 100, "Used % CPU critical")
 )
 
 func main() {
