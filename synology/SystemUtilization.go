@@ -64,11 +64,7 @@ type SystemUtilization struct {
 		TotalReal  int    `json:"total_real"`
 		TotalSwap  int    `json:"total_swap"`
 	} `json:"memory"`
-	Network []struct {
-		Device string `json:"device"`
-		Rx     int    `json:"rx"`
-		Tx     int    `json:"tx"`
-	} `json:"network"`
+	Network []NetworkPort `json:"network"`
 	Space struct {
 		Total struct {
 			Device      string `json:"device"`
@@ -89,6 +85,12 @@ type SystemUtilization struct {
 		} `json:"volume"`
 	} `json:"space"`
 	Time int `json:"time"`
+}
+
+type NetworkPort struct {
+	Device string `json:"device"`
+	Rx     int    `json:"rx"`
+	Tx     int    `json:"tx"`
 }
 
 func (api *Syno) SystemUtilization() (*SystemUtilization, error) {

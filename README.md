@@ -15,3 +15,7 @@ Checks:
 - Storagepools (RAIDS)
 - Hosts (Controller)
 - Enclosures (Extension Unit)
+- CPU
+- Memory
+- Network
+

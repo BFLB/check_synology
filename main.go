@@ -42,6 +42,8 @@ var (
 	poolFailCrit  = flag.Int("cPoolFail", 1, "Number of failed disks per RAID for state critical")
 	cpuWarn       = flag.Int("wCPU", 80, "Used % CPU warning")
 	cpuCrit       = flag.Int("cCPU", 100, "Used % CPU critical")
+	memWarn       = flag.Int("wMem", 80, "Used % Memory warning")
+	memCrit       = flag.Int("wCrit", 80, "Used % Memory warning")
 )
 
 func main() {
@@ -146,7 +148,8 @@ func main() {
 	nagiArgs.HostSecondary = *hostSecondary
 	nagiArgs.CPUwarn = *cpuWarn
 	nagiArgs.CPUcrit = *cpuCrit
-
+	nagiArgs.MemWarn = *memWarn
+	nagiArgs.MemCrit = *memCrit
 
 	var nagiMetrics nagios.Metrics
 
@@ -159,6 +162,8 @@ func main() {
 	nagios.CheckStoragePool(nagiArgs, &nagiMetrics, storage)
 	nagios.CheckEnclosure(nagiArgs, &nagiMetrics, dualEnclosure)
 	nagios.CheckCPU(nagiArgs, &nagiMetrics, systemUtilization)
+	nagios.CheckMemory(nagiArgs, &nagiMetrics, systemUtilization)
+	nagios.CheckNetwork(nagiArgs, &nagiMetrics, systemUtilization)
 
 	timestampProcess := time.Now()
 

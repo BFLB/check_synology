@@ -25,6 +25,8 @@ type Args struct {
 	HostSecondary string
 	CPUwarn      int
 	CPUcrit      int
+	MemWarn      int
+	MemCrit      int
 }
 
 type Metrics struct {
