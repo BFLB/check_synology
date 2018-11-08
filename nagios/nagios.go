@@ -23,6 +23,8 @@ type Args struct {
 	PoolFailCrit int
 	HostPrimary  string
 	HostSecondary string
+	CPUwarn      int
+	CPUcrit      int
 }
 
 type Metrics struct {

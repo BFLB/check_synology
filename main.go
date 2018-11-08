@@ -40,6 +40,8 @@ var (
 	poolWarn      = flag.Int("wPool", 80, "Used % warning")
 	poolCrit      = flag.Int("cPool", 90, "Used % critical")
 	poolFailCrit  = flag.Int("cPoolFail", 1, "Number of failed disks per RAID for state critical")
+	cpuWarn       = flag.Int("wCPU", 80, "Used % CPU warning")
+	cpuCrit       = flag.Int("cCPU", 80, "Used % CPU critical")
 )
 
 func main() {
@@ -85,7 +87,7 @@ func main() {
 		fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
 		os.Exit(exitcode)
 	}
-	/*
+
 		var systemUtilization *synology.SystemUtilization
 		systemUtilization, err = api.SystemUtilization()
 		if err != nil {
@@ -93,7 +95,7 @@ func main() {
 			fmt.Printf("%s: Plugin version: %s - %s\n", nagios.NagiState(exitcode), _version, err.Error())
 			os.Exit(exitcode)
 		}
-	*/
+
 
 	var storage *synology.StorageObject
 	storage, err = api.Storage()
@@ -142,6 +144,9 @@ func main() {
 	nagiArgs.PoolFailCrit = *poolFailCrit
 	nagiArgs.HostPrimary = *hostPrimary
 	nagiArgs.HostSecondary = *hostSecondary
+	nagiArgs.CPUwarn = *cpuWarn
+	nagiArgs.CPUcrit = *cpuCrit
+
 
 	var nagiMetrics nagios.Metrics
 
@@ -153,6 +158,7 @@ func main() {
 	nagios.CheckDisk(nagiArgs, &nagiMetrics, storage)
 	nagios.CheckStoragePool(nagiArgs, &nagiMetrics, storage)
 	nagios.CheckEnclosure(nagiArgs, &nagiMetrics, dualEnclosure)
+	nagios.CheckCPU(nagiArgs, &nagiMetrics, systemUtilization)
 
 	timestampProcess := time.Now()
 

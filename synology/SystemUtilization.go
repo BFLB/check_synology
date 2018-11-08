@@ -22,7 +22,7 @@ type systemUtilizationResponse struct {
 type SystemUtilization struct {
 	CPU struct {
 		FifteenMinLoad int    `json:"15min_load"`
-		OneMinLoad     int    `json:"1min_load"`
+		OneMinLoad     int   `json:"1min_load"`
 		FiveMinLoad    int    `json:"5min_load"`
 		Device         string `json:"device"`
 		OtherLoad      int    `json:"other_load"`
